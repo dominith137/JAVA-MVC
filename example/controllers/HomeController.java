@@ -5,6 +5,7 @@ import views.EventListView;
 import views.HomeView;
 import views.NewEventView;
 import views.RemoveEventView;
+import views.RegisterGuestView;
 
 
 /**
@@ -19,6 +20,7 @@ public class HomeController extends Controller
     private EventListController eventListController = new EventListController();
     private RemoveEventController removeEventController = new RemoveEventController(eventListController);
     private NewEventController newEventController = new NewEventController(eventListController, removeEventController);
+    private RegisterGuestController registerGuestController = new RegisterGuestController();
 	
 	
 	//-----------------------------------------------------------------------
@@ -31,6 +33,7 @@ public class HomeController extends Controller
 		eventListController.run();
 		newEventController.run();
 		removeEventController.run();
+        registerGuestController.run();
 		
 		// Initializes HomeView
 		homeView = new HomeView(this, mainFrame);
@@ -58,4 +61,9 @@ public class HomeController extends Controller
 	{
 		return removeEventController.getView();
 	}
+
+    public RegisterGuestView getRegisterGuestView()
+    {
+        return registerGuestController.getView();
+    }
 }

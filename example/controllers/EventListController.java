@@ -30,6 +30,19 @@ public class EventListController extends Controller
 		table = new JTable(getDataColumns(), getNameColumns());
 		eventListView = new EventListView(this, table);
 	}
+
+	/**
+	 * Reloads table data from disk.
+	 */
+	public void reload()
+	{
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		model.setRowCount(0);
+		Vector<Vector<Object>> data = getDataColumns();
+		for (Vector<Object> row : data) {
+			model.addRow(row.toArray());
+		}
+	}
 	
 	/**
 	 * Adds a new row in a {@link JTable} with the values informed.

@@ -7,6 +7,7 @@ import models.SchedulerEvent;
 import models.SchedulerIO;
 import views.EventListView;
 import views.NewEventView;
+import controllers.RemoveEventController;
 
 
 /**
@@ -19,6 +20,7 @@ public class NewEventController extends Controller
 	//-----------------------------------------------------------------------
 	private NewEventView newEventView;
 	private EventListController eventListController;
+	private RemoveEventController removeEventController;
 
 	
 	//-----------------------------------------------------------------------
@@ -34,6 +36,12 @@ public class NewEventController extends Controller
 	{
 		this.eventListController = eventListController;
 		
+	}
+
+	public NewEventController(EventListController eventListController, RemoveEventController removeEventController)
+	{
+		this.eventListController = eventListController;
+		this.removeEventController = removeEventController;
 	}
 	
 	
@@ -70,6 +78,9 @@ public class NewEventController extends Controller
 		
 		
 		eventListController.addNewRow(metadata);
+		if (removeEventController != null) {
+			removeEventController.reload();
+		}
 	}
 	
 	

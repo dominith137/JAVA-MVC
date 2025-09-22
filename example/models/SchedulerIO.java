@@ -111,4 +111,67 @@ public class SchedulerIO implements Model
 		
 		return response;
 	}
+
+	/**
+	 * Removes events by their zero-based line indexes from the storage file.
+	 * The indexes must refer to the order returned by {@link #getEvents()}.
+	 *
+	 * @param indexesToRemove Zero-based indexes to be removed
+	 */
+	public void removeEventsByIndexes(List<Integer> indexesToRemove)
+	{
+		// Defensive copy and sort for predictable processing
+		List<Integer> sorted = new ArrayList<>(indexesToRemove);
+		sorted.sort(Integer::compareTo);
+
+		File source = new File(DIRECTORY, FILE);
+		File temp = new File(DIRECTORY, FILE + ".tmp");
+
+		try {
+			if (!source.exists()) {
+				notice = "File not found";
+				notifyViews();
+				return;
+			}
+
+			BufferedReader reader = new BufferedReader(new FileReader(source));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(temp));
+
+			String line = reader.readLine();
+			int lineIndex = 0;
+			int removePointer = 0;
+
+			while (line != null) {
+				boolean shouldRemove = removePointer < sorted.size() && lineIndex == sorted.get(removePointer);
+				if (!shouldRemove) {
+					writer.write(line, 0, line.length());
+					writer.newLine();
+				} else {
+					removePointer++;
+				}
+				line = reader.readLine();
+				lineIndex++;
+			}
+
+			reader.close();
+			writer.close();
+
+			// Replace original file
+			if (!source.delete() || !temp.renameTo(source)) {
+				throw new Exception("Could not replace events file");
+			}
+		} catch (FileNotFoundException fnfe) {
+			notice = "File not found";
+			notifyViews();
+		} catch (Exception ex) {
+			notice = "There was a problem updating the event file";
+			notifyViews();
+		} finally {
+			// Clean up temp file if it still exists on failure
+			try {
+				File tmp = new File(DIRECTORY, FILE + ".tmp");
+				if (tmp.exists()) tmp.delete();
+			} catch (Exception ignore) {}
+		}
+	}
 }

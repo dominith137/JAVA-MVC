@@ -19,8 +19,16 @@ public class RemoveEventController extends Controller
 	//-----------------------------------------------------------------------
 	//		Attributes
 	//-----------------------------------------------------------------------
-	private RemoveEventView removeEventView;
-	private JTable table;
+    private RemoveEventView removeEventView;
+    private JTable table;
+    private EventListController eventListController;
+
+    public RemoveEventController() {}
+
+    public RemoveEventController(EventListController eventListController)
+    {
+        this.eventListController = eventListController;
+    }
 
 	//-----------------------------------------------------------------------
 	//		Methods
@@ -78,7 +86,7 @@ public class RemoveEventController extends Controller
 	/**
 	 * Removes selected events from storage and refreshes table.
 	 */
-	public void removeSelected()
+    public void removeSelected()
 	{
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		List<Integer> indexes = new ArrayList<>();
@@ -96,6 +104,9 @@ public class RemoveEventController extends Controller
 		} catch (Exception ex) { }
 
 		reload();
+        if (eventListController != null) {
+            eventListController.reload();
+        }
 	}
 
 	//-----------------------------------------------------------------------
